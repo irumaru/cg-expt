@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>demo</title>
+
+  <!-- three.jsを読み込む(ローカル) -->
+  <!-- <script src="./three.js"></script> -->
+  <!-- three.jsを読み込む(CDN) -->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.min.js"></script>-->
+  <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>
+
+</head>
+<body>
+ <script>
+    //グローバル変数
+    let p = 0;
+    let q = 0;
+    let sphereArrays = [];
+    const group = new THREE.Group();
+    let rv = 0;
+
+    // ページの読み込みを待つ
+    window.addEventListener('DOMContentLoaded', init);
+
+    function init() {
+      // サイズを指定
+      const width = 1200
+      const height = 1000;
+
+      // レンダラーを作成
+      var renderer = new THREE.WebGLRenderer();
+      document.body.appendChild(renderer.domElement);
+      renderer.setSize(width, height);
+
+      // シーンを作成
+      const scene = new THREE.Scene();
+
+      // カメラを作成
+      const camera = new THREE.PerspectiveCamera(45, width / height);
+      // カメラの初期座標を設定
+      camera.position.set(0, 2, 10); //位置を指定
+      camera.lookAt(0, 0, 0); //見つめる方向
+
+      // カメラコントローラーを作成
+      const controls = new THREE.OrbitControls(camera, document.body); 
+
+      // 平行光源1
+      var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+      directionalLight1.position.set(10, 10, 10);
+      // シーンに追加
+      scene.add(directionalLight1);
+      // 平行光源2
+      var directionalLight2 = new THREE.DirectionalLight(0x888888);
+      directionalLight2.position.set(-10, -10, 10);
+      // シーンに追加
+      scene.add(directionalLight2);
+
+      // helper
+      const gridHelper = new THREE.GridHelper(2,10); // size, step
+      //scene.add(gridHelper);
+      const axisHelper = new THREE.AxisHelper(2); //軸の長さ　X：赤、Y：緑、z：青
+      //scene.add(axisHelper);
+
+      // 箱を作成
+      //var geometry = new THREE.BoxGeometry(1, 1, 1);
+      //var material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
+      //var box = new THREE.Mesh(geometry, material);
+      //box.position.set(0,0,0); //位置を指定
+      //scene.add(box);   // シーンに追加
+
+      //ドーナッツ
+      // 半径, チューブの太さ, 
+      //var torusMaterial1 = new THREE. MeshToonMaterial( { color: 0xf5fffa } );
+      //var torusMaterial1 = new THREE. MeshLambertMaterial( { color: 0xf5fffa } );
+      var torusMaterial1 = new THREE. MeshPhongMaterial( { color: 0xf5fffa } );
+      var torusGeometry1 = new THREE.TorusGeometry( 4, 0.5, 24, 24 ); 
+      var torus1 = new THREE.Mesh( torusGeometry1, torusMaterial1 );
+      torus1.position.set( 0, 0, 0);
+      scene.add( torus1 );
+      
+      for(let i = 0; i < 8; i ++){
+        //角すい〜円すい
+        //半径、高さ、底面の分離数
+        var coneGeometry = new THREE.ConeGeometry( 0.15, 0.4, 6 ); 
+        //半径、高さ、底面の分割数
+        var coneMaterial = new THREE. MeshPhongMaterial( {color: 0xafeeee} );
+        var cone = new THREE.Mesh( coneGeometry, coneMaterial );
+        cone.rotation.set(Math.PI / 2, 0, 0);
+        cone.position.set( 4 * Math.sin(Math.PI * 2 * (i / 8)), 4 * Math.cos(Math.PI * 2 * (i / 8)), 0.8 );
+        scene.add( cone );
+
+        //球
+        var sphereGeometry = new THREE.SphereGeometry( 0.3, 32, 32 ); 
+        //半径、垂直方向の分割数、水平方向の分割数
+        var sphereMaterial = new THREE. MeshPhongMaterial( {color: 0x0000ff,wireframe: true} );
+        var sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
+        sphere.position.set( 4 * Math.sin(Math.PI * 2 * (i / 8)), 4 * Math.cos(Math.PI * 2 * (i / 8)), 1.6 );
+        scene.add( sphere );
+        sphereArrays[i] = sphere;
+      }
+
+      //var torusMaterial2 = new THREE. MeshToonMaterial( { color: 0x00bfff } );
+      //var torusMaterial2 = new THREE. MeshLambertMaterial( { color: 0x00bfff } );
+      var torusMaterial2 = new THREE. MeshPhongMaterial( { color: 0x00bfff } );
+      var torusGeometry2 = new THREE.TorusGeometry( 2.4, 0.5, 24, 24 ); 
+      var torus2 = new THREE.Mesh( torusGeometry2, torusMaterial2 );
+      torus2.position.set( 0, 0, 0);
+      //scene.add( torus2 );
+
+      const geometry = new THREE.SphereGeometry( 0.05, 32, 32 );
+      const material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+      let max = 1000;
+      for(let i = 0; i < max; i ++){
+        const zv = (Math.PI * 2 * (i / max)) * 8;
+        console.log(zv);
+
+        let sphere = new THREE.Mesh( geometry, material );
+        sphere.position.set(8 * Math.sin(Math.PI * 2 * (i / max)), 8 * Math.cos(Math.PI * 2 * (i / max)), Math.sin(zv));
+        group.add( sphere );
+
+        sphere = new THREE.Mesh( geometry, material );
+        sphere.position.set(8 * Math.sin(Math.PI * 2 * (i / max)), 8 * Math.cos(Math.PI * 2 * (i / max)), Math.sin(-zv));
+        group.add( sphere );
+      }
+      scene.add(group);
+
+      //球
+      //var sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 ); 
+      //var sphereMaterial = new THREE. MeshPhongMaterial( {color: 0xff8800,wireframe: true} );
+      //var sphere1 = new THREE.Mesh( sphereGeometry, sphereMaterial );
+      //sphere1.position.set( 0, 0, -1 );
+      //scene.add( sphere1 );
+
+      update();
+
+      // 毎フレーム時に実行されるループイベントです
+      function update() {
+        // レンダリング
+        renderer.render(scene, camera);
+        requestAnimationFrame(update);
+        // 箱を回転させる
+        /*
+        torus1.rotation.x -= 0.01;
+        torus1.rotation.y -= 0.01;
+        */
+
+        //torus2.position.z += Math.sin(q) / 8;
+
+        rv += Math.PI / 100000;
+        group.rotation.z += 2;
+        
+        p += Math.PI / 64;
+        q += Math.PI / 100;
+        for(let i = 0; i < 8; i ++){
+          if(i % 2 == 0){
+            sphereArrays[i].position.z = 1.8 + (Math.sin(p) / 4);
+          }else{
+            sphereArrays[i].position.z = 1.8 + (Math.cos(p) / 4);
+          }
+        }
+      }
+    }
+</script>
+</body>
+</html>
