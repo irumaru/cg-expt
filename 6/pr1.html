@@ -18,8 +18,6 @@
     let p = 0;
     let q = 0;
     let sphereArrays = [];
-    let SsphereArrays = [];
-    let iSsphereArrays = [];
     const group = new THREE.Group();
     let rv = 0;
 
@@ -28,8 +26,8 @@
 
     function init() {
       // サイズを指定
-      const width = 1200
-      const height = 1000;
+      const width = 1000
+      const height = 700;
 
       // レンダラーを作成
       var renderer = new THREE.WebGLRenderer();
@@ -65,46 +63,35 @@
       const axisHelper = new THREE.AxisHelper(2); //軸の長さ　X：赤、Y：緑、z：青
       //scene.add(axisHelper);
 
-      // 箱を作成
-      //var geometry = new THREE.BoxGeometry(1, 1, 1);
-      //var material = new THREE.MeshPhongMaterial({ color: 0x0000ff });
-      //var box = new THREE.Mesh(geometry, material);
-      //box.position.set(0,0,0); //位置を指定
-      //scene.add(box);   // シーンに追加
-
       //ドーナッツ
       // 半径, チューブの太さ, 太さ方向の分離数, ドーナッツの分離数
-      //var torusMaterial1 = new THREE. MeshToonMaterial( { color: 0xf5fffa } );
-      //var torusMaterial1 = new THREE. MeshLambertMaterial( { color: 0xf5fffa } );
       var torusMaterial1 = new THREE. MeshPhongMaterial( { color: 0xf5fffa } );
       var torusGeometry1 = new THREE.TorusGeometry( 4, 0.5, 20, 100 ); 
       var torus1 = new THREE.Mesh( torusGeometry1, torusMaterial1 );
       torus1.position.set( 0, 0, 0);
       scene.add( torus1 );
       
+      //角すい〜円すい
+      //半径、高さ、底面の分離数
+      var coneGeometry = new THREE.ConeGeometry( 0.15, 0.4, 6 ); 
+      //半径、高さ、底面の分割数
+      var coneMaterial = new THREE. MeshPhongMaterial( {color: 0xafeeee} );
+      //球
+      var sphereGeometry = new THREE.SphereGeometry( 0.3, 32, 32 ); 
+      //半径、垂直方向の分割数、水平方向の分割数
+      var sphereMaterial = new THREE.MeshPhongMaterial( {color: 0x000000,wireframe: true} );
       for(let i = 0; i < 8; i ++){
-        //角すい〜円すい
-        //半径、高さ、底面の分離数
-        var coneGeometry = new THREE.ConeGeometry( 0.15, 0.4, 6 ); 
-        //半径、高さ、底面の分割数
-        var coneMaterial = new THREE. MeshPhongMaterial( {color: 0xafeeee} );
         var cone = new THREE.Mesh( coneGeometry, coneMaterial );
         cone.rotation.set(Math.PI / 2, 0, 0);
         cone.position.set( 4 * Math.sin(Math.PI * 2 * (i / 8)), 4 * Math.cos(Math.PI * 2 * (i / 8)), 0.8 );
         scene.add( cone );
 
-        //球
-        var sphereGeometry = new THREE.SphereGeometry( 0.3, 32, 32 ); 
-        //半径、垂直方向の分割数、水平方向の分割数
-        var sphereMaterial = new THREE. MeshPhongMaterial( {color: 0x0000ff,wireframe: true} );
         var sphere = new THREE.Mesh( sphereGeometry, sphereMaterial );
         sphere.position.set( 4 * Math.sin(Math.PI * 2 * (i / 8)), 4 * Math.cos(Math.PI * 2 * (i / 8)), 1.6 );
         scene.add( sphere );
         sphereArrays[i] = sphere;
       }
 
-      //var torusMaterial2 = new THREE. MeshToonMaterial( { color: 0x00bfff } );
-      //var torusMaterial2 = new THREE. MeshLambertMaterial( { color: 0x00bfff } );
       var torusMaterial2 = new THREE. MeshPhongMaterial( { color: 0x00bfff } );
       var torusGeometry2 = new THREE.TorusGeometry( 2.4, 0.5, 24, 24 ); 
       var torus2 = new THREE.Mesh( torusGeometry2, torusMaterial2 );
@@ -123,22 +110,13 @@
 
         let sphere = new THREE.Mesh( geometry, material );
         sphere.position.set(8 * Math.sin(Math.PI * 2 * (i / max)), 8 * Math.cos(Math.PI * 2 * (i / max)), Math.sin(zv));
-        SsphereArrays[i] = sphere;
         group.add( sphere );
 
         sphere = new THREE.Mesh( geometry, material );
         sphere.position.set(8 * Math.sin(Math.PI * 2 * (i / max)), 8 * Math.cos(Math.PI * 2 * (i / max)), Math.sin(-zv));
-        iSsphereArrays[i] = sphere;
         group.add( sphere );
       }
       scene.add(group);
-
-      //球
-      //var sphereGeometry = new THREE.SphereGeometry( 0.5, 32, 32 ); 
-      //var sphereMaterial = new THREE. MeshPhongMaterial( {color: 0xff8800,wireframe: true} );
-      //var sphere1 = new THREE.Mesh( sphereGeometry, sphereMaterial );
-      //sphere1.position.set( 0, 0, -1 );
-      //scene.add( sphere1 );
 
       update();
 
@@ -147,26 +125,14 @@
         // レンダリング
         renderer.render(scene, camera);
         requestAnimationFrame(update);
-        // 箱を回転させる
-        /*
-        torus1.rotation.x -= 0.01;
-        torus1.rotation.y -= 0.01;
-        */
-
-        //torus2.position.z += Math.sin(q) / 8;
-
+        
         rv += Math.PI / 100000;
         group.rotation.z += 2;
         
         p += Math.PI / 64;
-        q += Math.PI / 100;
         for(let i = 0; i < 8; i ++){
-          if(i % 2 == 0){
-            //sphereArrays[i].position.z = 1.8 + (Math.sin(p) / 4);
-          }else{
-            //sphereArrays[i].position.z = 1.8 + (-Math.sin(p) / 4);
-          }
           sphereArrays[i].position.z = 1.8 + (Math.sin(p + (Math.PI * 2 * (i / 6))) / 4);
+          sphereMaterial.color.r = Math.abs(Math.sin(p) * 0.7) + 0.3;
         }
       }
     }
