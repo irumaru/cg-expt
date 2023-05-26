@@ -18,6 +18,8 @@
     let p = 0;
     let q = 0;
     let sphereArrays = [];
+    let SsphereArrays = [];
+    let iSsphereArrays = [];
     const group = new THREE.Group();
     let rv = 0;
 
@@ -71,11 +73,11 @@
       //scene.add(box);   // シーンに追加
 
       //ドーナッツ
-      // 半径, チューブの太さ, 
+      // 半径, チューブの太さ, 太さ方向の分離数, ドーナッツの分離数
       //var torusMaterial1 = new THREE. MeshToonMaterial( { color: 0xf5fffa } );
       //var torusMaterial1 = new THREE. MeshLambertMaterial( { color: 0xf5fffa } );
       var torusMaterial1 = new THREE. MeshPhongMaterial( { color: 0xf5fffa } );
-      var torusGeometry1 = new THREE.TorusGeometry( 4, 0.5, 24, 24 ); 
+      var torusGeometry1 = new THREE.TorusGeometry( 4, 0.5, 20, 100 ); 
       var torus1 = new THREE.Mesh( torusGeometry1, torusMaterial1 );
       torus1.position.set( 0, 0, 0);
       scene.add( torus1 );
@@ -109,19 +111,24 @@
       torus2.position.set( 0, 0, 0);
       //scene.add( torus2 );
 
-      const geometry = new THREE.SphereGeometry( 0.05, 32, 32 );
+      //const geometry = new THREE.SphereGeometry( 0.05, 32, 32 );
       const material = new THREE.MeshBasicMaterial( {color: 0xffffff} );
       let max = 1000;
       for(let i = 0; i < max; i ++){
         const zv = (Math.PI * 2 * (i / max)) * 8;
-        console.log(zv);
+        const rv = zv + (Math.PI / 2);
+        //console.log(rv);
+
+        const geometry = new THREE.SphereGeometry( 0.05 * Math.abs(Math.sin(rv)) + 0.01, 32, 32 );
 
         let sphere = new THREE.Mesh( geometry, material );
         sphere.position.set(8 * Math.sin(Math.PI * 2 * (i / max)), 8 * Math.cos(Math.PI * 2 * (i / max)), Math.sin(zv));
+        SsphereArrays[i] = sphere;
         group.add( sphere );
 
         sphere = new THREE.Mesh( geometry, material );
         sphere.position.set(8 * Math.sin(Math.PI * 2 * (i / max)), 8 * Math.cos(Math.PI * 2 * (i / max)), Math.sin(-zv));
+        iSsphereArrays[i] = sphere;
         group.add( sphere );
       }
       scene.add(group);
@@ -155,10 +162,11 @@
         q += Math.PI / 100;
         for(let i = 0; i < 8; i ++){
           if(i % 2 == 0){
-            sphereArrays[i].position.z = 1.8 + (Math.sin(p) / 4);
+            //sphereArrays[i].position.z = 1.8 + (Math.sin(p) / 4);
           }else{
-            sphereArrays[i].position.z = 1.8 + (Math.cos(p) / 4);
+            //sphereArrays[i].position.z = 1.8 + (-Math.sin(p) / 4);
           }
+          sphereArrays[i].position.z = 1.8 + (Math.sin(p + (Math.PI * 2 * (i / 6))) / 4);
         }
       }
     }
