@@ -56,13 +56,16 @@
         for(let i = 0; i < 500; i ++){
             // 木0をスプライトで作成
             var textureLoader = new THREE.TextureLoader();  
-            var texture = textureLoader.load("lesson4/img/tree" + parseInt(Math.random() * 5) + ".png");
+            var texture = textureLoader.load("img/tree" + parseInt(Math.random() * 5) + ".png");
             const material = new THREE.SpriteMaterial({ map: texture,});
 
             const sprite = new THREE.Sprite(material);
-            sprite.position.x = 1000 * (Math.random() - 0.5);
+            let x = 1000 * (Math.random() - 0.5);
+            let z = 1000 * (Math.random() - 0.5);
+            sprite.position.x = x;
+            //sprite.position.y = 0.3 * (1000 - Math.sqrt(x * x + z * z));
             sprite.position.y = 50;
-            sprite.position.z = 1000 * (Math.random() - 0.5);
+            sprite.position.z = z;
             sprite.scale.set(100,100,100);
             scene.add(sprite);
         }
