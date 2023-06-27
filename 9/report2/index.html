@@ -1,103 +1,17 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
-  <title>demo</title>
-
-  <!-- three.jsを読み込む(ローカル) -->
-  <!-- <script src="./three.js"></script> -->
-  <!-- three.jsを読み込む(CDN) -->
-  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.min.js"></script>-->
-  <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
-  <!--<script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>-->
-
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第2回の課題</title>
 </head>
 <body>
-  <script type="importmap">
-    {
-      "imports": {
-        "three": "https://unpkg.com/three@0.137.4/build/three.module.js",
-        "three/addons/": "https://unpkg.com/three@0.137.4/examples/jsm/"
-      }
-    }
-  </script>
- <script type="module">
-    import * as THREE from "three";
-    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
-    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
-
-    // ページの読み込みを待つ
-    window.addEventListener('DOMContentLoaded', init);
-
-    function init() {
-      // サイズを指定
-      const width = window.innerWidth;
-      const height = window.innerHeight;
-
-      // レンダラーを作成
-      var renderer = new THREE.WebGLRenderer();
-      document.body.appendChild(renderer.domElement);
-      renderer.setSize(width, height);
-
-      // シーンを作成
-      const scene = new THREE.Scene();
-
-      // カメラを作成
-      const camera = new THREE.PerspectiveCamera(45, width / height);
-      // カメラの初期座標を設定
-      camera.position.set(8, 12, 4); //位置を指定
-      camera.lookAt(0, 0, 0); //見つめる方向
-
-      // カメラコントローラーを作成
-      const controls = new OrbitControls(camera, document.body);
-
-      // 平行光源1
-      var directionalLight1 = new THREE.DirectionalLight(0xffffff);
-      directionalLight1.position.set(3, 10, 0);
-      // シーンに追加
-      scene.add(directionalLight1);
-      // 平行光源2
-      var directionalLight2 = new THREE.DirectionalLight(0xffffff);
-      directionalLight2.position.set(-3, 10, 0);
-      // シーンに追加
-      //scene.add(directionalLight2);
-
-      // helper
-      const gridHelper = new THREE.GridHelper(10,10); // size, step
-      //scene.add(gridHelper);
-      const axisHelper = new THREE.AxisHelper(10); //軸の長さ　X：赤、Y：緑、z：青
-      //scene.add(axisHelper);
-      
-      //tsugujetの読み込み
-      const loader = new GLTFLoader();
-
-      loader.load('tsugujet-2.glb', function (gltf) {
-        scene.add(gltf.scene);
-      }, undefined, function(error) {
-        console.error(error);
-      } );
-      
-      update();
-
-      // 毎フレーム時に実行されるループイベントです
-      function update() {
-        // レンダリング
-        renderer.render(scene, camera);
-        requestAnimationFrame(update);
-
-        //console.log(camera.position);
-      }
-    }
-</script>
-<style>
-  html,
-  body
-  {
-    margin: 0;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-  }
-</style>
+    <h1>第2回の課題</h1>
+    <h2>作品</h2>
+    <a href="pr2.html">成果物</a>
+    <a href="https://github.com/irumaru/cg-expt/blob/main/9/report2/pr2.html">ソースコード</a>
+    <h2>工夫した点</h2>
+    ・準備中
 </body>
 </html>
