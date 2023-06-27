@@ -45,7 +45,7 @@
       // カメラを作成
       const camera = new THREE.PerspectiveCamera(45, width / height);
       // カメラの初期座標を設定
-      camera.position.set(0, -16, 16); //位置を指定
+      camera.position.set(8, 12, 4); //位置を指定
       camera.lookAt(0, 0, 0); //見つめる方向
 
       // カメラコントローラーを作成
@@ -84,6 +84,8 @@
         // レンダリング
         renderer.render(scene, camera);
         requestAnimationFrame(update);
+
+        //console.log(camera.position);
       }
     }
 </script>
