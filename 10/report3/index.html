@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>demo</title>
+
+  <!-- three.jsを読み込む(ローカル) -->
+  <!-- <script src="./three.js"></script> -->
+  <!-- three.jsを読み込む(CDN) -->
+  <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/99/three.min.js"></script>-->
+  <script src="https://unpkg.com/three@0.137.4/build/three.min.js"></script>
+  <!--<script src="https://unpkg.com/three@0.137.4/examples/js/controls/OrbitControls.js"></script>-->
+  <script src="VolumetricFire.js"></script>
+
+</head>
+<body>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.137.4/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.137.4/examples/jsm/"
+      }
+    }
+  </script>
+ <script type="module">
+    import * as THREE from "three";
+    import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
+    import { OrbitControls } from "three/addons/controls/OrbitControls.js";
+
+    // ページの読み込みを待つ
+    window.addEventListener('DOMContentLoaded', init);
+
+    function init() {
+      // サイズを指定
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+
+      // レンダラーを作成
+      var renderer = new THREE.WebGLRenderer();
+      document.body.appendChild(renderer.domElement);
+      renderer.setSize(width, height);
+
+      // シーンを作成
+      const scene = new THREE.Scene();
+
+      // カメラを作成
+      const camera = new THREE.PerspectiveCamera(45, width / height);
+      // カメラの初期座標を設定
+      camera.position.set(8, 12, 4); //位置を指定
+      camera.lookAt(0, 0, 0); //見つめる方向
+
+      // カメラコントローラーを作成
+      const controls = new OrbitControls(camera, document.body);
+
+      // 平行光源1
+      var directionalLight1 = new THREE.DirectionalLight(0xffffff);
+      directionalLight1.position.set(3, 10, 0);
+      // シーンに追加
+      scene.add(directionalLight1);
+      // 平行光源2
+      var directionalLight2 = new THREE.DirectionalLight(0xffffff);
+      directionalLight2.position.set(-3, 10, 0);
+      // シーンに追加
+      //scene.add(directionalLight2);
+
+      // helper
+      const gridHelper = new THREE.GridHelper(10,10); // size, step
+      //scene.add(gridHelper);
+      const axisHelper = new THREE.AxisHelper(10); //軸の長さ　X：赤、Y：緑、z：青
+      //scene.add(axisHelper);
+      
+      //tsugujetの読み込み
+      const loader = new GLTFLoader();
+
+      loader.load('tsugujet-2.glb', function (gltf) {
+        scene.add(gltf.scene);
+      }, undefined, function(error) {
+        console.error(error);
+      } );
+
+      // ジェット噴射の作成
+
+      // set path to texture images
+      // either relative or absolute path
+      VolumetricFire.texturePath = './textures/';
+      var fireWidth  = 100;
+      var fireHeight = 400;
+      var fireDepth  = 100;
+      var sliceSpacing = 7;
+
+      var fire1 = new VolumetricFire(
+        fireWidth,
+        fireHeight,
+        fireDepth,
+        sliceSpacing,
+        camera
+      );
+      scene.add( fire1.mesh );
+
+      var fire2 = new VolumetricFire(
+        fireWidth,
+        fireHeight,
+        fireDepth,
+        sliceSpacing,
+        camera
+      );
+      scene.add( fire2.mesh );
+
+      // you can set position, rotation and scale
+      // fire.mesh accepts THREE.mesh features
+      //fire.mesh.position.set( 0, fireHeight / 2, 0 );
+
+      fire1.mesh.scale.set(0.004, 0.01, 0.004);
+      fire1.mesh.rotation.set(Math.PI * 1.5, 0, 0);
+      fire1.mesh.position.set( 0.33, 0.25, -5 );
+
+      fire2.mesh.scale.set(0.004, 0.01, 0.004);
+      fire2.mesh.rotation.set(Math.PI * 1.5, 0, 0);
+      fire2.mesh.position.set( -0.33, 0.25, -5 );
+
+      // レンダリング関係
+      var clock = new THREE.Clock();
+      update();
+
+      // 毎フレーム時に実行されるループイベントです
+      function update() {
+        // レンダリング
+
+        var elapsed = clock.getElapsedTime();
+        fire1.update( elapsed );
+        fire2.update( elapsed );
+
+        renderer.render(scene, camera);
+        requestAnimationFrame(update);
+
+        //console.log(camera.position);
+      }
+    }
+</script>
+<style>
+  html,
+  body
+  {
+    margin: 0;
+    overflow: hidden;
+    width: 100%;
+    height: 100%;
+  }
+</style>
+</body>
+</html>
