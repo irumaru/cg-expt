@@ -118,23 +118,63 @@
       fire2.mesh.rotation.set(Math.PI * 1.5, 0, 0);
       fire2.mesh.position.set( -0.33, 0.25, -5 );
 
-      // レンダリング関係
-      var clock = new THREE.Clock();
+      // ジオメトリ
+      // 形状データを作成
+      const SIZE = 10000;
+      // 配置する個数
+      const LENGTH = 10000;
+      // 頂点情報を格納する配列
+      const vertices = [];
+      for (let i = 0; i < LENGTH; i++) {
+        const x = SIZE * (Math.random() - 0.5);
+        const y = SIZE * (Math.random() - 0.5);
+        const z = SIZE * (Math.random() - 0.5);
+
+        vertices.push(x, y, z);
+      }
+
+      // 形状データを作成
+      const geometry = new THREE.BufferGeometry();
+      geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+      // マテリアルを作成
+      const material = new THREE.PointsMaterial({
+        // 一つ一つのサイズ
+        size: 10,
+        // 色
+        color: 0xffffff,
+      });
+
+      // 物体を作成
+      const starPointMesh = new THREE.Points(geometry, material);
+      scene.add(starPointMesh); // シーンは任意の THREE.Scene インスタンス
+
+      // レンダリング関係の初期化
+      let clock = new THREE.Clock();
+      let starRotate = 0;
+
+      // アニメーションレンダリングの開始
       update();
 
       // 毎フレーム時に実行されるループイベントです
       function update() {
-        // レンダリング
-
+        // ジェット噴射のレンダリング
         var elapsed = clock.getElapsedTime() * 10;
         fire1.update( elapsed );
         fire2.update( elapsed );
 
-        renderer.render(scene, camera);
-        //console.log(camera.position);
-        requestAnimationFrame(update);
+        // 星のレンダリング
+        starPointMesh.rotation.set(starRotate, 0, 0);
+        starRotate += Math.PI * 0.002;
 
+        // 視点変更
+        renderer.render(scene, camera);
+
+        // 視点のデバッグ用
         //console.log(camera.position);
+
+        // レンダリングループ
+        requestAnimationFrame(update);
       }
     }
 </script>
