@@ -81,6 +81,8 @@
         // fire.mesh accepts THREE.mesh features
         fire.mesh.position.set( 0, fireHeight / 2, 0 );
 
+        fire.mesh.rotation.set(Math.PI / 2, 0, 0);
+
 
         // 光源（環境光）
         const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
